@@ -1,5 +1,11 @@
 # OpenShift 4.x Cloud Reference Architecture
 
+
+
+# WORK IN PROGRESS 
+
+
+
 ## Resource Management
 
 You should contain all your OpenShift resources inside a single resource group or project.  This will simplify resource management and cleanup of your OpenShift clusters.  Each cloud provider has a different way of organizing resources:  in Azure and AWS, you use resource groups; in GCP you would organize everything under a project.
