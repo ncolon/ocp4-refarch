@@ -24,9 +24,9 @@ Each LoadBalancer requires a **static** IP address.  If you want to expose your 
 
 We require at least 3 LoadBalancers to ensure proper operation of your OpenShift cluster
 
-* `api-int.<cluster_name>.<base_domain>` - Used for internal cluster machine configuration (bootstrap) process.  Use an internal IP address.  Needs to load balance ports 6443 and 22623 to all master nodes and bootstrap server.
+* `api-int.<cluster_name>.<base_domain>` - Used for internal cluster machine configuration (bootstrap) process and any subsequent node provisioning event (ie: worker scaling via MachineSets).  Use an internal IP address.  Needs to load balance port 22623 to all master nodes and bootstrap server.
 * `api.<cluster_name>.<base_domain>` - Used for Kubernetes API, management of the cluster via oc and kubectl commands. Can use public or private IP address.  Needs to load balance port 6443 to all master nodes.
-* `*.apps.<cluster_name>.<base_domain>` - Used to expose your workloads outside of the cluster. Can use public or private IP address
+* `*.apps.<cluster_name>.<base_domain>` - Used to expose your workloads routes outside of the cluster. Can use public or private IP address
 
 ### Security Groups
 
@@ -75,9 +75,9 @@ _etcd-server-ssl._tcp.<cluster_name>.<base_domain>  86400 IN    SRV 0        10 
 _etcd-server-ssl._tcp.<cluster_name>.<base_domain>  86400 IN    SRV 0        10     2380 etcd-2.<cluster_name>.<base_domain>.
 ```
 
-3. `api.<cluster_name>.<base_domain>` - This DNS record must point to the load balancer for the control plane machines. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.
+3. `api.<cluster_name>.<base_domain>` - This DNS record must point to the load balancer for the control plane machines. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster. **The API server must be able to resolve the worker nodes by the host names that are recorded in Kubernetes. If it cannot resolve the node names, proxied API calls can fail, and you cannot retrieve logs from Pods.**
 
-4. `api-int.<cluster_name>.<base_domain>` - This DNS record must point to the load balancer for the control plane machines. This record must be resolvable from all the nodes within the cluster. **The API server must be able to resolve the worker nodes by the host names that are recorded in Kubernetes. If it cannot resolve the node names, proxied API calls can fail, and you cannot retrieve logs from Pods.**
+4. `api-int.<cluster_name>.<base_domain>` - This DNS record must point to the internal load balancer for the control plane machines. This record must be resolvable from all the nodes within the cluster. 
 
 5. `*.apps.<cluster_name>.<base_domain>` - A wildcard DNS record that points to the load balancer that targets the machines that run the Ingress router pods, which are the worker nodes by default. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.
 
@@ -85,8 +85,8 @@ _etcd-server-ssl._tcp.<cluster_name>.<base_domain>  86400 IN    SRV 0        10 
 
 Create a public DNS zone in your cloud provider called <base_domain>, Eg. `example.com`.  Delegate this zone to your cloud provider.  This zone will be used by anyone that wants to access your cluster externally, and should resolve the following records
 
-1. `api.<cluster_name>.<base_domain>` - This DNS record must point to the load balancer for the control plane machines. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.
-2. `*.apps.<cluster_name>.<base_domain>` - A wildcard DNS record that points to the load balancer that targets the machines that run the Ingress router pods, which are the worker nodes by default. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.
+1. `api.<cluster_name>.<base_domain>` - This DNS record must point to the load balancer for the control plane machines. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster.  It's used for management functions of your cluster, including the use of the `oc` command line utility.
+2. `*.apps.<cluster_name>.<base_domain>` - A wildcard DNS record that points to the load balancer that targets the machines that run the Ingress router pods, which are the worker nodes by default. This record must be resolvable by both clients external to the cluster and from all the nodes within the cluster. It's used for Web browser and REST access to your applications.
 
 
 
@@ -96,9 +96,9 @@ OpenShift 4.x automates many of the tasks required to deploy a usable cluster:  
 
 
 
-## Compute Nodes
+## Cluster Nodes
 
-### Cluster Masters
+### Control Plane Nodes (masters)
 
 In a Kubernetes cluster, the master nodes run services that are required to control the Kubernetes cluster. In OpenShift Container Platform, the master machines are the control plane. They contain more than just the Kubernetes services for managing the OpenShift Container Platform cluster. Because all of the machines with the control plane role are master machines, and the terms "master" and "control plane" are used interchangeably to describe them. Instead of being grouped into a MachineSet, master machines are defined by a series of standalone machine API resources. Extra controls apply to master machines to prevent you from deleting all master machines and breaking your cluster.
 
@@ -108,7 +108,7 @@ Services that fall under the Kubernetes category on the master include the API s
 
 You should spread out these control plane nodes across different availability zones in your cloud provider region.
 
-### Cluster Workers
+### Compute Nodes (workers)
 
 In a Kubernetes cluster, the worker nodes are where the actual workloads requested by Kubernetes users run and are managed. The worker nodes advertise their capacity and the scheduler, which is part of the master services, determines on which nodes to start containers and Pods. Important services run on each worker node, including CRI-O, which is the container engine, Kubelet, which is the service that accepts and fulfills requests for running and stopping container workloads, and a service proxy, which manages communication for pods across workers.
 
