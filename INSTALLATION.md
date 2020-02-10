@@ -175,7 +175,7 @@ Update image:  ncm-mbpr.local:80/openshift4/ocp4:4.3.0-x86_64
 Mirror prefix: ncm-mbpr.local:80/openshift4/ocp4
 ```
 
-To use the new mirrored repository to install, add the following section to the bottom of your [install-config.yaml](#step-1---create-the-install-configyaml-file):
+To use the new mirrored repository to install, add the following section to the bottom of your [install-config.yaml](#1-create-the-install-configyaml-file):
 
 ```
 imageContentSources:
