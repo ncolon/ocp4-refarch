@@ -55,11 +55,11 @@ From node to node:
 To loadbalancers:
 
 | Port    | Machines                                                     | Internal | External | Description           |
-| :------ | :----------------------------------------------------------- | :------- | :------- | :-------------------- |
-| `6443`  | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. | x        | x        | Kubernetes API server |
-| `22623` | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. | x        |          | Machine Config server |
-| `443`   | The machines that run the Ingress router pods, compute, or worker, by default. | x        | x        | HTTPS traffic         |
-| `80`    | The machines that run the Ingress router pods, compute, or worker by default. | x        | x        | HTTP traffic          |
+| :------ | :----------------------------------------------------------- | :------: | :------: | :-------------------- |
+| `6443`  | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |    ✅     |    ✅     | Kubernetes API server |
+| `22623` | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |    ✅     |          | Machine Config server |
+| `443`   | The machines that run the Ingress router pods, compute, or worker, by default. |    ✅     |    ✅     | HTTPS traffic         |
+| `80`    | The machines that run the Ingress router pods, compute, or worker by default. |    ✅     |    ✅     | HTTP traffic          |
 
 
 
@@ -161,43 +161,43 @@ The following table lists the access modes:
 | Access Mode   | CLI abbreviation | Description                                               |
 | ------------- | ---------------- | --------------------------------------------------------- |
 | ReadWriteOnce | RWO              | The volume can be mounted as read-write by a single node. |
-| ReadOnlyMany  | ROX              | The volume can be mounter as read-only by many nodes.     |
-| ReadWriteMany | RWX              |                                                           |
+| ReadOnlyMany  | ROX              | The volume can be mounted as read-only by many nodes.     |
+| ReadWriteMany | RWX              | The volume can be mounded as read-write by many nodes.    |
 
 #### Supported Access Modes per Storage Type
 The following table lists supported access modes for PVs
 
 | Volume Plug-in                      | ReadWriteOnce | ReadOnlyMany | ReadWriteMany |
-| ----------------------------------- | ------------- | ------------ | ------------- |
+| ----------------------------------- | :-----------: | :----------: | :-----------: |
 | AWS EFS                             | ✅            | ✅          | ✅            |
-| AWS EBS                             | ✅            | -           | -             |
+| AWS EBS                             | ✅            | ⛔️        | ⛔️           |
 | Azure File                          | ✅            | ✅          | ✅           |
-| Azure Disk                          | ✅            | -           | -             |
-| Cinder                              | ✅            | -           | -             |
-| Fibre Channel                       | ✅            | ✅          | -             |
-| GCE Persistent Disk                 | ✅            | -           | -             |
-| HostPath                            | ✅            | -           | -             |
-| iSCSI                               | ✅            | ✅          | -             |
-| Local volume                        | ✅            | -           | -             |
+| Azure Disk                          | ✅            | ⛔️         | ⛔️           |
+| Cinder                              | ✅            | ⛔️         | ⛔️           |
+| Fibre Channel                       | ✅            | ✅          | ⛔️           |
+| GCE Persistent Disk                 | ✅            | ⛔️         | ⛔️           |
+| HostPath                            | ✅            | ⛔️         | ⛔️           |
+| iSCSI                               | ✅            | ✅          | ⛔️           |
+| Local volume                        | ✅            | ⛔️         | ⛔️           |
 | NFS                                 | ✅            | ✅          | ✅           |
-| Red Hat OpenShift Container Storage | ✅            | -           | ✅           |
-| VMware vSphere                      | ✅            | -           | -            |
+| Red Hat OpenShift Container Storage | ✅            | ⛔️         | ✅           |
+| VMware vSphere                      | ✅            | ⛔️         | ⛔️          |
 
 #### Block Volume Support
 OpenShift Container Platform can statically provision raw block volumes. These volumes do not have a file system, and can provide performance benefits for applications that either write to the disk directly or implement their own storage service.
 
 | Volume Plug-in                      | Manually provisioned | Dynamically provisioned | Fully supported |
-| ----------------------------------- | ------------- | ------------ | ------------- |
+| ----------------------------------- | :-----------: | :----------: | :-----------: |
 | AWS EBS                             | ✅            | ✅          | ✅            |
-| Azure File                          | -            | -          | -            |
+| Azure File                          | ⛔️          | ⛔️        | ⛔️          |
 | Azure Disk                          | ✅            | ✅           | ✅             |
-| Cinder                              | -            | -           | -             |
-| Fibre Channel                       | ✅            | -           | -             |
+| Cinder                              | ⛔️          | ⛔️         | ⛔️           |
+| Fibre Channel                       | ✅            | ⛔️         | ⛔️           |
 | GCP                                 | ✅            | ✅          | ✅            |
-| HostPath                            | -            | -           | -             |
-| iSCSI                               | ✅            | -           | -             |
-| Local volume                        | ✅            | -           | ✅            |
-| NFS                                 | -            | -          | -            |
+| HostPath                            | ⛔️          | ⛔️         | ⛔️           |
+| iSCSI                               | ✅            | ⛔️         | ⛔️           |
+| Local volume                        | ✅            | ⛔️         | ✅            |
+| NFS                                 | ⛔️          | ⛔️        | ⛔️          |
 | Red Hat OpenShift Container Storage | ✅            | ✅          | ✅           |
 | VMware vSphere                      | ✅            | ✅          | ✅           |
 
