@@ -135,7 +135,7 @@ RedHat provides [step by step instructions](https://docs.openshift.com/container
 
 2. Once your image registry is created, you need to [update your pull-secret file](https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations) with its authentication details.
 
-3. Clone the official OpenShift 4.x [quay.io registry](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags.  The `oc` command line tool provides functionality that will pull all required artifacts from this external repository.
+3. You then need to clone the official OpenShift 4.x [quay.io registry](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags.  The `oc` command line tool provides functionality that will pull all required artifacts from this external repository.
 
 ```shell
 $ export OCP_RELEASE=<release_version>
@@ -175,7 +175,7 @@ Update image:  ncm-mbpr.local:80/openshift4/ocp4:4.3.0-x86_64
 Mirror prefix: ncm-mbpr.local:80/openshift4/ocp4
 ```
 
-To use the new mirrored repository to install, add the following section to the bottom of your install-config.yaml:
+To use the new mirrored repository to install, add the following section to the bottom of your [install-config.yaml](./INSTALLATION.md#step-1---create-the-install-configyaml-file):
 
 ```
 imageContentSources:
