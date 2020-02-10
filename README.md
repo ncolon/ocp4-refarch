@@ -125,7 +125,7 @@ In OpenShift Container Platform, MachineSets control the worker machines. Machin
 
 You should spread out these worker nodes across different availability zones in your cloud provider region.
 
-### Recommended Resources Requirements
+### Recommended Resource Sizing
 
 | Machine       | Count | Operating System | vCPU | RAM  | Storage |
 | ------------- | ----- | ---------------- | ---- | ---- | ------- |
@@ -135,17 +135,88 @@ You should spread out these worker nodes across different availability zones in 
 
 Since we can create cluster workers via MachineSets with the performance characteristics we need, its not as critical to define your cluster with the exact performance characteristics at deployment time.  Control plane nodes however, should have enough CPU, memory and disk to meet your performance requirements.
 
+### OS Image
+
+As part of their cloud provisioning strategy, RedHat has made available images that you can use for your RHCOS vms.  They are broken down by cloud provider and, in come cases, regions.  A list of all the images available can be found [here](https://github.com/openshift/installer/blob/master/data/data/rhcos.json).  The list is updated [frequently](https://github.com/openshift/installer/commits/master/data/data/rhcos.json) as new features are added and issues are fixed.  Ensure you're using the latest image avaialble for your cluster.
+
 
 
 ## Storage
 
 ### Compute Node Storage
 
-Special consideration should be given to the storage used for control plane virtual machines.  You should use the fastest disk type available on your cloud provider, usually SSDs or NVMe.
+Special consideration should be given to the storage used for the OS disk of your control plane virtual machines.  You should use the fastest disk type available on your cloud provider, usually SSDs or NVMe.  You can use slower disk types for your master nodes, but performance might suffer due to etcd sync issues across master nodes.
 
-### Persistent Storage for Image Registry
+### Persistent Volume for Image Registry
 
-If you're deploying across any major cloud provider, the openshift-image-registry operator will create and manage for you a PVC for your image registry.  You do not need to do anything as long as the credentials you've passed to your cluster have proper permissions to create storage infrastructure in your cloud provider
+If you're deploying across any major cloud provider, the openshift-image-registry operator will create and manage for you a PVC for your image registry.  You do not need to do anything as long as the credentials you've passed to your cluster have proper permissions to create storage infrastructure in your cloud provider.
 
-### Persistent Storage for Workloads
+### Persistent Volumes for Workloads
+
+For you workloads, you can also leverage your cloud provider storage classes.  A PersistentVolume can be mounted on a host in any way supported by the resource provider. Providers have different capabilities and each PV’s access modes are set to the specific modes supported by that particular volume.  Take a look at the tables bellow to decide which storage class best fits your needs.
+
+#### Access Modes
+The following table lists the access modes:
+
+| Access Mode   | CLI abbreviation | Description                                               |
+| ------------- | ---------------- | --------------------------------------------------------- |
+| ReadWriteOnce | RWO              | The volume can be mounted as read-write by a single node. |
+| ReadOnlyMany  | ROX              | The volume can be mounter as read-only by many nodes.     |
+| ReadWriteMany | RWX              |                                                           |
+
+#### Supported Access Modes per Storage Type
+The following table lists supported access modes for PVs
+
+| Volume Plug-in                      | ReadWriteOnce | ReadOnlyMany | ReadWriteMany |
+| ----------------------------------- | ------------- | ------------ | ------------- |
+| AWS EFS                             | ✅            | ✅          | ✅            |
+| AWS EBS                             | ✅            | -           | -             |
+| Azure File                          | ✅            | ✅          | ✅           |
+| Azure Disk                          | ✅            | -           | -             |
+| Cinder                              | ✅            | -           | -             |
+| Fibre Channel                       | ✅            | ✅          | -             |
+| GCE Persistent Disk                 | ✅            | -           | -             |
+| HostPath                            | ✅            | -           | -             |
+| iSCSI                               | ✅            | ✅          | -             |
+| Local volume                        | ✅            | -           | -             |
+| NFS                                 | ✅            | ✅          | ✅           |
+| Red Hat OpenShift Container Storage | ✅            | -           | ✅           |
+| VMware vSphere                      | ✅            | -           | -            |
+
+#### Block Volume Support
+OpenShift Container Platform can statically provision raw block volumes. These volumes do not have a file system, and can provide performance benefits for applications that either write to the disk directly or implement their own storage service.
+
+| Volume Plug-in                      | Manually provisioned | Dynamically provisioned | Fully supported |
+| ----------------------------------- | ------------- | ------------ | ------------- |
+| AWS EBS                             | ✅            | ✅          | ✅            |
+| Azure File                          | -            | -          | -            |
+| Azure Disk                          | ✅            | ✅           | ✅             |
+| Cinder                              | -            | -           | -             |
+| Fibre Channel                       | ✅            | -           | -             |
+| GCP                                 | ✅            | ✅          | ✅            |
+| HostPath                            | -            | -           | -             |
+| iSCSI                               | ✅            | -           | -             |
+| Local volume                        | ✅            | -           | ✅            |
+| NFS                                 | -            | -          | -            |
+| Red Hat OpenShift Container Storage | ✅            | ✅          | ✅           |
+| VMware vSphere                      | ✅            | ✅          | ✅           |
+
+
+
+## Installation Flow
+
+Bootstrapping a cluster involves the following steps:
+
+1. The bootstrap machine boots and starts hosting the remote resources required for the master machines to boot.
+2. The master machines fetch the remote resources from the bootstrap machine and finish booting. 
+3. The master machines use the bootstrap machine to form an etcd cluster.
+4. The bootstrap machine starts a temporary Kubernetes control plane using the new etcd cluster.
+5. The temporary control plane schedules the production control plane to the master machines.
+6. The temporary control plane shuts down and passes control to the production control plane.
+7. The bootstrap machine injects OpenShift Container Platform components into the production control plane.
+8. The installation program shuts down the bootstrap machine. 
+9. The control plane sets up the worker nodes.
+10. The control plane installs additional services in the form of a set of Operators.
+
+The result of this bootstrapping process is a fully running OpenShift Container Platform cluster. The cluster then downloads and configures remaining components needed for the day-to-day operation, including the creation of worker machines in supported environments.
 
