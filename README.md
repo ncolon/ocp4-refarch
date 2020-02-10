@@ -216,5 +216,5 @@ To deploy OpenShift Container Storage, the administrator can go to the OpenShift
 
 
 
-## [Installation Process](./installation.md)
+## [Installation Process](./INSTALLATION.md)
 
