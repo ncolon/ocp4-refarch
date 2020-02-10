@@ -1,16 +1,10 @@
 # OpenShift 4.x Cloud Reference Architecture
 
-
-
 # WORK IN PROGRESS 
-
-
 
 ## Resource Management
 
 You should contain all your OpenShift resources inside a single resource group or project.  This will simplify resource management and cleanup of your OpenShift clusters.  Each cloud provider has a different way of organizing resources:  in Azure and AWS, you use resource groups; in GCP you would organize everything under a project.
-
-
 
 ## Network
 
@@ -62,7 +56,6 @@ To loadbalancers:
 | `80`    | The machines that run the Ingress router pods, compute, or worker by default. |    ✅     |    ✅     | HTTP traffic          |
 
 
-
 ## DNS
 
 DNS is a critical component of OCP4.  Getting it right is paramount to a successful deployment.  Your cluster should use 2 DNS zones.  This document will use a base domain of `example.com` and a cluster name of `openshift4`
@@ -100,8 +93,6 @@ Create a public DNS zone in your cloud provider called <base_domain>, Eg. `examp
 ## Access Management
 
 OpenShift 4.x automates many of the tasks required to deploy a usable cluster:  It will configure your image registry storage on a per-cloud basis, it will create and destroy worker nodes automatically to scale up or down your cluster, and it will deploy a loadbalancer to handle application traffic, as well as add worker nodes to the `*.apps` loadbalancer.  This means we need to pass along cloud credentials with enough permissions to the cloud provider so the cluster operators can handle these automated tasks.
-
-
 
 
 
@@ -153,7 +144,15 @@ If you're deploying across any major cloud provider, the openshift-image-registr
 
 ### Persistent Volumes for Workloads
 
-For you workloads, you can also leverage your cloud provider storage classes.  A PersistentVolume can be mounted on a host in any way supported by the resource provider. Providers have different capabilities and each PV’s access modes are set to the specific modes supported by that particular volume.  Take a look at the tables bellow to decide which storage class best fits your needs.
+For you workloads, you can also leverage your cloud provider storage classes.  A PersistentVolume can be mounted on a host in any way supported by the resource provider. Providers have different capabilities and each PV’s access modes are set to the specific modes supported by that particular volume.
+
+Block storage is suitable for databases and other low-latency transactional workloads. Some examples of supported workloads are Red Hat OpenShift Container Platform logging and monitoring, and PostgreSQL.
+
+Object storage is for video and audio files, compressed data archives, and the data used to train artificial intelligence or machine learning programs. In addition, object storage can be used for any application developed with a cloud-first approach.
+
+File storage is for continuous integration and delivery, web application file storage, and artificial intelligence or machine learning data aggregation.
+
+Take a look at the tables bellow to decide which storage class best fits your needs.
 
 #### Access Modes
 The following table lists the access modes:
@@ -201,22 +200,21 @@ OpenShift Container Platform can statically provision raw block volumes. These v
 | Red Hat OpenShift Container Storage | ✅            | ✅          | ✅           |
 | VMware vSphere                      | ✅            | ✅          | ✅           |
 
+#### OpenShift Container Storage
+
+Red Hat [OpenShift Container Storage](https://www.openshift.com/products/container-storage/) is software-defined storage integrated with and optimized for Red Hat OpenShift Container Platform. OpenShift Container Storage 4.2 is built on Red Hat Ceph® Storage, Rook, and NooBaa to provide container native storage services that support block, file, and object services. For the initial 4.2 release, OpenShift Container Storage will be supported on OpenShift platforms deployed on Amazon Web Services and VMware. It will install anywhere OpenShift does: on-premise or in the public cloud.
+
+Leveraging the Kubernetes Operator framework, OpenShift Container Storage (OCS) automates a lot of the complexity involved in providing cloud native storage for OpenShift. OCS integrates deeply into cloud native environments by providing a seamless experience for scheduling, lifecycle management, resource management, security, monitoring, and user experience of the storage resources.
+
+To deploy OpenShift Container Storage, the administrator can go to the OpenShift Administrator Console and navigate to the [OperatorHub](https://operatorhub.io/) to find the OpenShift Container Storage Operator.  During installation, you will be prompted to select the nodes that will be used to setup the storage cluster.  While you can use the openshift worker nodes to install OCS on, it is recommended that you create additional MachineSet to deploy your storage cluster.
+
+##### Minimum Requirements for OCS nodes
+
+| Count| vCPU | Memory (GiB) | Storage |
+| ---- | ---- | ------------ | ------- |
+| 3    | 16   | 64           | 2TB     |
 
 
-## Installation Flow
 
-Bootstrapping a cluster involves the following steps:
-
-1. The bootstrap machine boots and starts hosting the remote resources required for the master machines to boot.
-2. The master machines fetch the remote resources from the bootstrap machine and finish booting. 
-3. The master machines use the bootstrap machine to form an etcd cluster.
-4. The bootstrap machine starts a temporary Kubernetes control plane using the new etcd cluster.
-5. The temporary control plane schedules the production control plane to the master machines.
-6. The temporary control plane shuts down and passes control to the production control plane.
-7. The bootstrap machine injects OpenShift Container Platform components into the production control plane.
-8. The installation program shuts down the bootstrap machine. 
-9. The control plane sets up the worker nodes.
-10. The control plane installs additional services in the form of a set of Operators.
-
-The result of this bootstrapping process is a fully running OpenShift Container Platform cluster. The cluster then downloads and configures remaining components needed for the day-to-day operation, including the creation of worker machines in supported environments.
+## [Installation Process](./installation.md)
 
