@@ -159,7 +159,7 @@ For you workloads, you can also leverage your cloud provider storage classes.  A
 The following table lists the access modes:
 
 | Access Mode   | CLI abbreviation | Description                                               |
-| ------------- | ---------------- | --------------------------------------------------------- |
+| :------------ | :--------------- | :-------------------------------------------------------- |
 | ReadWriteOnce | RWO              | The volume can be mounted as read-write by a single node. |
 | ReadOnlyMany  | ROX              | The volume can be mounted as read-only by many nodes.     |
 | ReadWriteMany | RWX              | The volume can be mounded as read-write by many nodes.    |
@@ -168,7 +168,7 @@ The following table lists the access modes:
 The following table lists supported access modes for PVs
 
 | Volume Plug-in                      | ReadWriteOnce | ReadOnlyMany | ReadWriteMany |
-| ----------------------------------- | :-----------: | :----------: | :-----------: |
+| :---------------------------------- | :-----------: | :----------: | :-----------: |
 | AWS EFS                             | ✅            | ✅          | ✅            |
 | AWS EBS                             | ✅            | ⛔️        | ⛔️           |
 | Azure File                          | ✅            | ✅          | ✅           |
