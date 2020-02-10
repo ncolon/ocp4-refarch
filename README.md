@@ -187,7 +187,7 @@ The following table lists supported access modes for PVs
 OpenShift Container Platform can statically provision raw block volumes. These volumes do not have a file system, and can provide performance benefits for applications that either write to the disk directly or implement their own storage service.
 
 | Volume Plug-in                      | Manually provisioned | Dynamically provisioned | Fully supported |
-| ----------------------------------- | :-----------: | :----------: | :-----------: |
+| :---------------------------------- | :-----------: | :----------: | :-----------: |
 | AWS EBS                             | ✅            | ✅          | ✅            |
 | Azure File                          | ⛔️          | ⛔️        | ⛔️          |
 | Azure Disk                          | ✅            | ✅           | ✅             |
