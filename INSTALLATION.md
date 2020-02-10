@@ -131,6 +131,8 @@ RedHat provides [step by step instructions](https://docs.openshift.com/container
 
 1. Create a mirror registry.  You can build your own [using podman and a generic web server](https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-creating-mirror-registry_installing-restricted-networks-preparations) or you can use a packaged image regustry solution like [Harbor](https://getharbor.io) or [Quay](https://quay.io) which provides image scanning and other advanced functionality.
 
+   You can also use Amazon ECR, Azure ACR and Google GCR as your image registry.  Each cloud provider provides mechanisms so that communication to their image registry solution happens though their network backbone and not through the public internet.
+
 2. Once your image registry is created, you need to [update your pull-secret file](https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations) with its authentication details.
 
 3. Clone the official OpenShift 4.x [quay.io registry](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags.  The `oc` command line tool provides functionality that will pull all required artifacts from this external repository.
