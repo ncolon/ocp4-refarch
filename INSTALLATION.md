@@ -270,7 +270,7 @@ spec:
 
 ## Terraform Implementations for Cloud Providers
 
-The prefered method for installing your cluster should be throug **[IPI](./INSTALLATION.md#installer-provisioned-infrastructure-ipi)**.  However, if you need to customize your cluster in a way thats not provided by IPI, the team at IBM Garage Solution Engineering has developed automation that can assist you in deploying your cluster as described in this reference architecture document.
+The prefered method for installing your cluster should be through **[IPI](./INSTALLATION.md#installer-provisioned-infrastructure-ipi)**.  However, if you need to customize your cluster in a way thats not provided by IPI, the team at IBM Garage Solution Engineering has developed automation that can assist you in deploying your cluster as described in this reference architecture document.
 
 Implementations are avaialble for [AWS](https://github.com/ibm-cloud-architecture/terraform-openshift4-aws), [Azure](https://github.com/ibm-cloud-architecture/terraform-openshift4-azure) and [GCP](https://github.com/ibm-cloud-architecture/terraform-openshift4-gcp).  Each repository has information on what parameters need to be provided, as well as what parameters can be changed.
 
