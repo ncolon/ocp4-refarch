@@ -1,10 +1,5 @@
 # OpenShift 4.x Cloud Reference Architecture
 
-# WORK IN PROGRESS 
-
-Table of Contents
-=================
-
 * [Resource Management](#resource-management)
 * [Network](#network)
    * [Subnets](#subnets)

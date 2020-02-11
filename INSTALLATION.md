@@ -1,9 +1,5 @@
 # OpenShift 4.x Cloud Reference Architecture
 
-# WORK IN PROGRESS 
-
-Table of Contents
-=================
 * [Installation Experience](#installation-experience)
    * [Installer Provisioned Infrastructure (IPI)](#installer-provisioned-infrastructure-ipi)
    * [User Provided Infrastructure (UPI)](#user-provided-infrastructure-upi)
