@@ -29,7 +29,7 @@ Table of Contents
       * [Block Volume Support](#block-volume-support)
       * [OpenShift Container Storage](#openshift-container-storage)
          * [Minimum Requirements for OCS nodes](#minimum-requirements-for-ocs-nodes)
-   * [Installation Process](./INSTALLATION.md)
+* [Installation Process](./INSTALLATION.md)
 
 ## Resource Management
 
