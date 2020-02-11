@@ -2,6 +2,35 @@
 
 # WORK IN PROGRESS 
 
+Table of Contents
+=================
+
+* [Resource Management](#resource-management)
+* [Network](#network)
+   * [Subnets](#subnets)
+   * [Availability Zones](#availability-zones)
+   * [LoadBalancers](#loadbalancers)
+   * [Security Groups](#security-groups)
+* [DNS](#dns)
+   * [Private DNS Zone](#private-dns-zone)
+   * [Public DNS Zone](#public-dns-zone)
+* [Access Management](#access-management)
+* [Cluster Nodes](#cluster-nodes)
+   * [Control Plane Nodes (masters)](#control-plane-nodes-masters)
+   * [Compute Nodes (workers)](#compute-nodes-workers)
+   * [Recommended Resource Sizing](#recommended-resource-sizing)
+   * [OS Image](#os-image)
+* [Storage](#storage)
+   * [Compute Node Storage](#compute-node-storage)
+   * [Persistent Volume for Image Registry](#persistent-volume-for-image-registry)
+   * [Persistent Volumes for Workloads](#persistent-volumes-for-workloads)
+      * [Access Modes](#access-modes)
+      * [Supported Access Modes per Storage Type](#supported-access-modes-per-storage-type)
+      * [Block Volume Support](#block-volume-support)
+      * [OpenShift Container Storage](#openshift-container-storage)
+         * [Minimum Requirements for OCS nodes](#minimum-requirements-for-ocs-nodes)
+   * [Installation Process](./INSTALLATION.md)
+
 ## Resource Management
 
 You should contain all your OpenShift resources inside a single resource group or project.  This will simplify resource management and cleanup of your OpenShift clusters.  Each cloud provider has a different way of organizing resources:  in Azure and AWS, you use resource groups; in GCP you would organize everything under a project.

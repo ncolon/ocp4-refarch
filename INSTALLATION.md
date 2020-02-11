@@ -2,6 +2,18 @@
 
 # WORK IN PROGRESS 
 
+Table of Contents
+=================
+* [Installation Experience](#installation-experience)
+   * [Installer Provisioned Infrastructure (IPI)](#installer-provisioned-infrastructure-ipi)
+   * [User Provided Infrastructure (UPI)](#user-provided-infrastructure-upi)
+      [1. Creating the install-config.yaml file](#1-creating-the-install-configyaml-file)
+      [2. Creating the installation manifests files](#2-creating-the-installation-manifests-files)
+      [3. Creating the ignition config files](#3-creating-the-ignition-config-files)
+      [4. Destroying your cluster](#4-destroying-your-cluster)
+   * [Disconnected Installation](#disconnected-installation)
+* [Terraform Implementations for Cloud Providers](#terraform-implementations-for-cloud-providers)
+
 ## Installation Experience
 
 Bootstrapping a cluster involves the following steps:
@@ -96,11 +108,11 @@ sshKey: |
   ssh-rsa <XXXXXXXXXXXXXXXXXXXXXXXXXX> user@workstation
 ```
 
-For `compute.platform`, `controlPlane.platform` and `platform`  sections, you can specify cloud provider information, such as the flavor of your master and worker nodes, OS disk storage, availability zones to deploy to, as well as any specific networking configuration
+For `compute.platform`, `controlPlane.platform` and `platform`  sections, you can specify cloud provider information, such as the flavor of your master and worker nodes, OS disk storage, availability zones to deploy to, as well as any specific networking configuration.  A list of possible parameters for your `install-config.yaml` file can be found [here](https://github.com/openshift/installer/blob/master/docs/user/customization.md).  Platform specific samples can also be found in the public OpenShift documentation.
 
-* [cluster-config.yaml for AWS](https://docs.openshift.com/container-platform/4.2/installing/installing_aws/installing-aws-customizations.html#installation-aws-config-yaml_installing-aws-customizations)
-* [cluster-config.yaml for Azure](https://docs.openshift.com/container-platform/4.2/installing/installing_azure/installing-azure-customizations.html#installation-azure-config-yaml_installing-azure-customizations)
-* [cluster-config.yaml for GCP](https://docs.openshift.com/container-platform/4.2/installing/installing_gcp/installing-gcp-customizations.html#installation-gcp-config-yaml_installing-gcp-customizations)
+* [install-config.yaml for AWS](https://docs.openshift.com/container-platform/4.2/installing/installing_aws/installing-aws-customizations.html#installation-aws-config-yaml_installing-aws-customizations)
+* [install-config.yaml for Azure](https://docs.openshift.com/container-platform/4.2/installing/installing_azure/installing-azure-customizations.html#installation-azure-config-yaml_installing-azure-customizations)
+* [install-config.yaml for GCP](https://docs.openshift.com/container-platform/4.2/installing/installing_gcp/installing-gcp-customizations.html#installation-gcp-config-yaml_installing-gcp-customizations)
 
 #### 2. Creating the installation manifests files
 
