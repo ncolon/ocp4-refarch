@@ -238,7 +238,9 @@ To deploy OpenShift Container Storage, the administrator can go to the OpenShift
 | ---- | ---- | ------------ | ------- |
 | 3    | 16   | 64           | 2TB     |
 
+## Sample Architecture
 
+![Topology](./media/topology.png) 
 
 ## [Installation Process](./INSTALLATION.md)
 

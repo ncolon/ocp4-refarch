@@ -72,7 +72,7 @@ $ openshift-install --dir=/tmp/upi-cluster create install-config
 ? Platform azure
 ? Region eastus2
 ? Base Domain azure.faststart.tk
-? Cluster Name upi-vienna
+? Cluster Name vegas
 ? Pull Secret [? for help] *********************************************************** <...>
 $ cat install-config.yaml
 apiVersion: v1
@@ -89,7 +89,7 @@ controlPlane:
   replicas: 3
 metadata:
   creationTimestamp: null
-  name: upi-vienna
+  name: vegas
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14
@@ -115,6 +115,15 @@ For `compute.platform`, `controlPlane.platform` and `platform`  sections, you ca
 ```bash
 $ openshift-install --dir=/tmp/upi-cluster/ create manifests
 INFO Consuming "Install Config" from target directory
+
+$ ls -la /tmp/upi-cluster/
+total 2952
+drwxr-xr-x   6 ncolon  wheel      192 Feb 11 18:57 .
+drwxrwxrwt  29 root    wheel      928 Feb 11 18:57 ..
+-rw-r--r--   1 ncolon  wheel   142255 Feb 11 18:57 .openshift_install.log
+-rw-r--r--   1 ncolon  wheel  1310080 Feb 11 18:57 .openshift_install_state.json
+drwxr-xr-x  28 ncolon  wheel      896 Feb 11 18:57 manifests
+drwxr-xr-x  15 ncolon  wheel      480 Feb 11 18:57 openshift
 ```
 
 This command will remove the `install-config.yaml` created in Step 1.  If needed, you can recreate the `install-config.yaml` file by running the `openshift-install` command from Step 1.   It will also create 2 directories in your installation path, `openshift` and `manifests`
@@ -156,9 +165,65 @@ INFO Consuming "Common Manifests" from target directory
 INFO Consuming "Worker Machines" from target directory
 INFO Consuming "Master Machines" from target directory
 INFO Consuming "Openshift Manifests" from target directory
+
+$ ls -la /tmp/upi-cluster/
+total 3600
+drwxr-xr-x   9 ncolon  wheel      288 Feb 11 19:07 .
+drwxrwxrwt  29 root    wheel      928 Feb 11 19:07 ..
+-rw-r--r--   1 ncolon  wheel   175288 Feb 11 19:07 .openshift_install.log
+-rw-r--r--   1 ncolon  wheel  1310080 Feb 11 19:07 .openshift_install_state.json
+drwxr-xr-x   4 ncolon  wheel      128 Feb 11 19:07 auth
+-rw-r--r--   1 ncolon  wheel   318820 Feb 11 19:07 bootstrap.ign
+-rw-r--r--   1 ncolon  wheel     1834 Feb 11 19:07 master.ign
+-rw-r--r--   1 ncolon  wheel      137 Feb 11 19:07 metadata.json
+-rw-r--r--   1 ncolon  wheel     1834 Feb 11 19:07 worker.ign
 ```
 
-#### 4. Destroying your cluster
+Boot up the compute nodes.  After about 30-45 minutes, your cluster should be up and running
+
+```bash
+$ oc get nodes
+NAME                                STATUS   ROLES    AGE     VERSION
+vegas-6ric0-master-0                Ready    master   6h45m   v1.16.2
+vegas-6ric0-master-1                Ready    master   6h45m   v1.16.2
+vegas-6ric0-master-2                Ready    master   6h45m   v1.16.2
+vegas-6ric0-worker-eastus21-cllqw   Ready    worker   6h36m   v1.16.2
+vegas-6ric0-worker-eastus22-5w247   Ready    worker   6h35m   v1.16.2
+vegas-6ric0-worker-eastus23-kjmxm   Ready    worker   6h35m   v1.16.2
+$ oc get clusteroperators
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
+authentication                             4.3.0     True        False         False      6h27m
+cloud-credential                           4.3.0     True        False         False      6h45m
+cluster-autoscaler                         4.3.0     True        False         False      6h35m
+console                                    4.3.0     True        False         False      6h30m
+dns                                        4.3.0     True        False         False      6h41m
+image-registry                             4.3.0     True        False         False      6h34m
+ingress                                    4.3.0     True        False         False      6h34m
+insights                                   4.3.0     True        False         False      6h42m
+kube-apiserver                             4.3.0     True        False         False      6h39m
+kube-controller-manager                    4.3.0     True        False         False      6h39m
+kube-scheduler                             4.3.0     True        False         False      6h40m
+machine-api                                4.3.0     True        False         False      6h41m
+machine-config                             4.3.0     True        False         False      6h36m
+marketplace                                4.3.0     True        False         False      6h37m
+monitoring                                 4.3.0     True        False         False      6h32m
+network                                    4.3.0     True        False         False      6h41m
+node-tuning                                4.3.0     True        False         False      6h37m
+openshift-apiserver                        4.3.0     True        False         False      6h36m
+openshift-controller-manager               4.3.0     True        False         False      6h40m
+openshift-samples                          4.3.0     True        False         False      6h35m
+operator-lifecycle-manager                 4.3.0     True        False         False      6h41m
+operator-lifecycle-manager-catalog         4.3.0     True        False         False      6h41m
+operator-lifecycle-manager-packageserver   4.3.0     True        False         False      6h37m
+service-ca                                 4.3.0     True        False         False      6h42m
+service-catalog-apiserver                  4.3.0     True        False         False      6h37m
+service-catalog-controller-manager         4.3.0     True        False         False      6h37m
+storage                                    4.3.0     True        False         False      6h36m
+```
+
+
+
+#### 5. Destroying your cluster
 
 Once you're done with your cluster, you may wish to delete it.  To destroy the cluster, the openshift-install binary provides parameters to do so.
 
@@ -192,7 +257,19 @@ RedHat provides [step by step instructions](https://docs.openshift.com/container
 
 2. Once your image registry is created, you need to [update your pull-secret file](https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations) with its authentication details.
 
-3. You then need to clone the official OpenShift 4.x [quay.io registry](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags.  The `oc` command line tool provides functionality that will pull all required artifacts from this external repository.
+   ```json
+     "auths": {
+   ...
+       "<local_registry_host_name>:<local_registry_host_port>": { 
+         "auth": "<credentials>", 
+         "email": "you@example.com"
+     },
+   ...
+   ```
+
+   
+
+3. You then need to clone the official OpenShift 4.x [quay.io registry](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags).  The `oc` command line tool provides functionality that will pull all required artifacts from this external repository.
 
 ```shell
 $ export OCP_RELEASE=<release_version>
@@ -234,9 +311,8 @@ Mirror prefix: ncm-mbpr.local:80/openshift4/ocp4
 
 To use the new mirrored repository to install, add the following section to the bottom of your [install-config.yaml](./INSTALLATION.md#1-create-the-install-configyaml-file):
 
-```
+```yaml
 imageContentSources:
-
 - mirrors:
   - ncm-mbpr.local:80/openshift4/ocp4
     source: quay.io/openshift-release-dev/ocp-release
@@ -245,9 +321,34 @@ imageContentSources:
     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 ```
 
+```yaml
+$ cat install-config.yaml
+apiVersion: v1
+baseDomain: azure.faststart.tk
+compute: { ... }
+controlPlane: { ... }
+metadata:
+  creationTimestamp: null
+  name: vegas
+networking: { ... }
+platform: { ... }
+pullSecret: '{"auths": {<...>}}'
+sshKey: |
+  ssh-rsa <XXXXXXXXXXXXXXXXXXXXXXXXXX> user@workstation
+imageContentSources:
+- mirrors:
+  - ncm-mbpr.local:80/openshift4/ocp4
+    source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - ncm-mbpr.local:80/openshift4/ocp4
+    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+```
+
+
+
 To use the new mirrored repository for upgrades, use the following to create an ImageContentSourcePolicy:
 
-```
+```yaml
 apiVersion: operator.openshift.io/v1alpha1
 kind: ImageContentSourcePolicy
 metadata:
@@ -261,7 +362,6 @@ spec:
     - ncm-mbpr.local:80/openshift4/ocp4
       source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 ```
-
 
 
 ## Terraform Implementations for Cloud Providers
